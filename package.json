@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "@react-google-maps/api": "^2.20.5"
+  },
+  "name": "location-address-flow",
+  "version": "1.0.0",
+  "main": "App.js",
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  },
+  "scripts": {
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "node backend/server.js",
+    "start:frontend": "npm start --prefix frontend",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

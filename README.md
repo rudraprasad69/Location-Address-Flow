@@ -46,54 +46,53 @@ The application is built with a modern, component-based architecture for a modul
 
 ## ⚙️ Installation & Setup
 
-To get a local copy up and running, follow these simple steps.
+### 1. Clone the repository
 
-### Prerequisites
-
-You must have [Node.js](https://nodejs.org/en/) (v18.17 or later) and [npm](https://www.npmjs.com/) installed on your local machine. You will also need a running instance of [MongoDB](https://www.mongodb.com/try/download/community) (Port 27017) and a Google Maps API Key.
-
-### Setup
-
-1.  **Clone the repository:**
 ```bash
-    git clone [https://github.com/rudraprasad69/Location-Address-Flow.git](https://github.com/rudraprasad69/Location-Address-Flow.git)
-    ```
+git clone https://github.com/rudraprasad69/Location-Address-Flow.git
+```
 
-2.  **Navigate to the project directory:**
+### 2. Navigate to the project directory
+
 ```bash
-    cd Location-Address-Flow
-    ```
+cd Location-Address-Flow
+```
 
-3.  **Install dependencies:**
+### 3. Install backend dependencies
+
 ```bash
-    npm install
-    cd client && npm install
-    ```
+npm install
+```
 
-4.  **Set up environment variables:**
-    Create a file named `.env` in the root directory for the backend, and `.env` in the `client` directory for the frontend.
+### 4. Install frontend dependencies
 
-    **Backend (`/.env`):**
+```bash
+cd client
+npm install
+```
+
+### 5. Create backend environment file
+
 ```env
-    PORT=5000
-    MONGO_URI="mongodb://localhost:27017/location-app"
-    ```
+PORT=5000
+MONGO_URI=mongodb://localhost:27017/location-app
+```
 
-**Frontend (`/client/.env`):**
+### 6. Create frontend environment file
+
 ```env
-    REACT_APP_GOOGLE_MAPS_API_KEY="your_google_maps_api_key_here"
-    REACT_APP_API_BASE_URL="http://localhost:5000"
-    ```
+REACT_APP_GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
+REACT_APP_API_BASE_URL=http://localhost:5000
+```
 
-5.  **Run the development servers:**
+### 7. Run the development server
+
 ```bash
-    npm run dev
-    ```
+npm run dev
+```
 
-6.  Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 8. Open the application
 
-## 📝 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-*(Action: Create a file named `LICENSE` and add the MIT License text.)*
+```text
+http://localhost:3000
+```

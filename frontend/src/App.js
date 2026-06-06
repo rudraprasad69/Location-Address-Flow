@@ -4,6 +4,8 @@ import AddressForm from './components/AddressForm';
 import axios from 'axios';
 import './App.css';
 
+const API_BASE = process.env.REACT_APP_API_URL !== undefined ? process.env.REACT_APP_API_URL : 'http://localhost:5002';
+
 const App = () => {
   // Center map on standard default (New York) first, updated by Geolocation
   const [location, setLocation] = useState({ lat: 40.7128, lng: -74.0060 });
@@ -14,7 +16,7 @@ const App = () => {
 
   const fetchAddresses = async () => {
     try {
-      const response = await axios.get('http://localhost:5002/addresses');
+      const response = await axios.get(`${API_BASE}/addresses`);
       setAddresses(response.data);
     } catch (err) {
       console.error('Failed to fetch addresses');
@@ -46,7 +48,7 @@ const App = () => {
     const geocodeLocation = async () => {
       setIsGeocoding(true);
       try {
-        const response = await axios.get(`http://localhost:5002/api/geocode?lat=${location.lat}&lng=${location.lng}`);
+        const response = await axios.get(`${API_BASE}/api/geocode?lat=${location.lat}&lng=${location.lng}`);
         setSuggestedAddress(response.data);
       } catch (err) {
         console.error('Failed to geocode location', err);
@@ -71,7 +73,7 @@ const App = () => {
     e.stopPropagation();
     if (window.confirm('Are you sure you want to delete this address?')) {
       try {
-        await axios.delete(`http://localhost:5002/addresses/${id}`);
+        await axios.delete(`${API_BASE}/addresses/${id}`);
         fetchAddresses();
         if (selectedAddress && selectedAddress._id === id) {
           setSelectedAddress(null);
@@ -85,7 +87,7 @@ const App = () => {
   const handleToggleFavorite = async (address, e) => {
     e.stopPropagation();
     try {
-      await axios.put(`http://localhost:5002/addresses/${address._id}`, {
+      await axios.put(`${API_BASE}/addresses/${address._id}`, {
         isFavorite: !address.isFavorite
       });
       fetchAddresses();

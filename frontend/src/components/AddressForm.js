@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+const API_BASE = process.env.REACT_APP_API_URL !== undefined ? process.env.REACT_APP_API_URL : 'http://localhost:5002';
+
 const AddressForm = ({ location, fetchAddresses, suggestedAddress, isGeocoding }) => {
   const [form, setForm] = useState({ category: '', house: '', road: '', isFavorite: false });
   const [error, setError] = useState(null);
@@ -22,7 +24,7 @@ const AddressForm = ({ location, fetchAddresses, suggestedAddress, isGeocoding }
         setError('All fields are required');
         return;
       }
-      await axios.post('http://localhost:5002/addresses', { ...form, latitude: location.lat, longitude: location.lng });
+      await axios.post(`${API_BASE}/addresses`, { ...form, latitude: location.lat, longitude: location.lng });
       setError(null);
       // Reset form after saving
       setForm({ category: '', house: '', road: '', isFavorite: false });

@@ -10,6 +10,14 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Strip Netlify Functions prefix if present
+app.use((req, res, next) => {
+  if (req.url.startsWith('/.netlify/functions/api')) {
+    req.url = req.url.replace('/.netlify/functions/api', '');
+  }
+  next();
+});
+
 mongoose.connect(process.env.MONGO_URI, {
   serverSelectionTimeoutMS: 3000,
   bufferCommands: false,
@@ -222,4 +230,8 @@ app.delete('/addresses/:id', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5002;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+if (!process.env.NETLIFY) {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+module.exports = app;

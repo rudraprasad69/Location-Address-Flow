@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import axios from 'axios';
 
+const API_BASE = process.env.REACT_APP_API_URL !== undefined ? process.env.REACT_APP_API_URL : 'http://localhost:5002';
+
 const LIBRARIES = [];
 
 const GoogleMapComponent = ({ location, setLocation, addresses = [], onSelectAddress, selectedAddress }) => {
@@ -43,7 +45,7 @@ const GoogleMapComponent = ({ location, setLocation, addresses = [], onSelectAdd
     setIsSearching(true);
     debounceRef.current = setTimeout(async () => {
       try {
-        const resp = await axios.get(`http://localhost:5002/api/search?q=${encodeURIComponent(value.trim())}`);
+        const resp = await axios.get(`${API_BASE}/api/search?q=${encodeURIComponent(value.trim())}`);
         setSearchResults(resp.data || []);
       } catch {
         setSearchResults([]);

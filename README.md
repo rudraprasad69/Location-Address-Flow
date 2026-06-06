@@ -1,6 +1,6 @@
 # Location Address Flow: A Location Management Dashboard
 
-<img width="1908" height="1723" alt="Location Flow Address" src="https://github.com/user-attachments/assets/b12a99ef-9440-4d0a-981a-06d661ddab9a" />
+<img width="960" height="540" alt="Location Flow Address Dashboard" src="https://github.com/user-attachments/assets/b12a99ef-9440-4d0a-981a-06d661ddab9a" /> 
 
 <p align="center">
   <img src="https://img.shields.io/github/license/rudraprasad69/Location-Address-Flow" alt="License">
@@ -32,13 +32,16 @@ Location Address Flow is a modern, web-based application designed to provide a h
 The application is built with a modern, component-based architecture for a modular and maintainable codebase.
 
 <p align="left">
-  <a href="https://reactjs.org/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="40" height="40"/> </a>
-  
-  <a href="https://nodejs.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg" alt="nodejs" width="40" height="40"/> </a>
-  
-  <a href="https://expressjs.com" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/express/express-original-wordmark.svg" alt="express" width="40" height="40"/> </a>
-
-  <a href="https://www.mongodb.com/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original-wordmark.svg" alt="mongodb" width="40" height="40"/> </a>
+  <a href="https://reactjs.org/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" alt="react" width="40" height="40"/> </a>
+  <br>
+  <br>
+  <a href="https://nodejs.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original.svg" alt="nodejs" width="40" height="40"/> </a>
+  <br>
+  <br>
+  <a href="https://expressjs.com" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/express/express-original.svg" alt="express" width="40" height="40"/> </a>
+  <br>
+  <br>
+  <a href="https://www.mongodb.com/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original.svg" alt="mongodb" width="40" height="40"/> </a>
 </p>
 
 ## ⚙️ Installation & Setup
@@ -47,7 +50,7 @@ To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 
-You must have [Node.js](https://nodejs.org/en/) (v18.17 or later) and npm installed on your local machine. You will also need a running instance of [MongoDB](https://www.mongodb.com/try/download/community) (Port 27017) and a Google Maps API Key.
+You must have [Node.js](https://nodejs.org/en/) (v18.17 or later) and [npm](https://www.npmjs.com/) installed on your local machine. You will also need a running instance of [MongoDB](https://www.mongodb.com/try/download/community) (Port 27017) and a Google Maps API Key.
 
 ### Setup
 

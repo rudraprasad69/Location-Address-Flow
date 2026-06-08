@@ -1,6 +1,7 @@
 # Location Address Flow: A Location Management Platorm
 
-<img width="1600" height="676" alt="CRED" src="https://github.com/user-attachments/assets/eaeea95e-a884-4482-ae04-f77bd96fc181" />
+<img width="1908" height="1723" alt="Location Flow Address" src="https://github.com/user-attachments/assets/94aac4be-0a8a-438d-8eaf-5f68c81c2835" />
+
 
 
 <p align="center">

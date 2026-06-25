@@ -18,12 +18,34 @@ app.use((req, res, next) => {
   next();
 });
 
-mongoose.connect(process.env.MONGO_URI, {
-  serverSelectionTimeoutMS: 3000,
-  bufferCommands: false,
-})
-  .then(() => console.log('✅ Database connected successfully'))
-  .catch((err) => console.warn('⚠️  MongoDB unavailable – address save/load will not work until MongoDB is started. Search & geocoding still work.\n', err.message));
+// ─── Serverless-safe MongoDB connection ───────────────────────────────────────
+// Cache the connection promise so warm Lambda/Netlify invocations reuse it.
+let connectionPromise = null;
+
+const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) return; // already connected
+  if (!connectionPromise) {
+    connectionPromise = mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 10000,
+    }).catch((err) => {
+      connectionPromise = null; // reset so next invocation retries
+      throw err;
+    });
+  }
+  await connectionPromise;
+};
+
+// Middleware: ensure DB is connected before any route that needs it
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('MongoDB connection failed:', err.message);
+    // Allow non-DB routes (geocode, search) to still work
+    next();
+  }
+});
 
 const AddressSchema = new mongoose.Schema({
   category: { type: String, required: true },

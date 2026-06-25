@@ -4,7 +4,8 @@ import AddressForm from './components/AddressForm';
 import axios from 'axios';
 import './App.css';
 
-const API_BASE = process.env.REACT_APP_API_URL !== undefined ? process.env.REACT_APP_API_URL : 'http://localhost:5002';
+const API_BASE = process.env.REACT_APP_API_URL !== undefined ? process.env.REACT_APP_API_URL : '';
+
 
 const App = () => {
   // Center map on standard default (New York) first, updated by Geolocation

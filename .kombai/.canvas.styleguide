@@ -1,0 +1,92 @@
+{
+  "guides": [
+    {
+      "name": "discord-inspiration",
+      "tokens": {
+        "colors": {
+          "primary": "#5865f2",
+          "on-primary": "#ffffff",
+          "primary-hover": "#8891f2",
+          "dark-blurple": "#3442d9",
+          "purple": "#808aff",
+          "cta-light": "#ffffff",
+          "on-cta-light": "#23272a",
+          "cta-green": "#57f287",
+          "on-cta-green": "#000000",
+          "surface": "#23272a",
+          "surface-charcoal": "#2c2f33",
+          "surface-glass": "rgba(255,255,255,0.1)",
+          "bg-indigo-1": "hsl(241.5 57% 27%)",
+          "bg-indigo-2": "hsl(257 100% 20%)",
+          "bg-near-black": "hsl(240 7% 5%)",
+          "on-surface": "#ffffff",
+          "on-surface-secondary": "rgba(255,255,255,0.7)",
+          "greyple": "#99aab5",
+          "off-white": "#f6f6f6",
+          "fuchsia": "#eb459e",
+          "yellow": "#fee75c",
+          "spring-green": "#57f287",
+          "red": "#ed4245",
+          "vivid-cerulean": "#00b0f4",
+          "orange": "#fda220"
+        },
+        "typography": {
+          "font-display": {
+            "family": "\"ABC Ginto Nord\", \"Abcgintodiscordnord\", Arial, sans-serif",
+            "size": "",
+            "url": ""
+          },
+          "font-body": {
+            "family": "\"ABC Ginto Normal\", \"Abcgintodiscord\", sans-serif",
+            "size": "",
+            "url": ""
+          },
+          "h1": {
+            "family": "{typography.font-display}",
+            "size": "56px",
+            "url": ""
+          },
+          "h2": {
+            "family": "{typography.font-display}",
+            "size": "40px",
+            "url": ""
+          },
+          "marquee": {
+            "family": "{typography.font-display}",
+            "size": "",
+            "url": ""
+          },
+          "body-lg": {
+            "family": "{typography.font-body}",
+            "size": "20px",
+            "url": ""
+          },
+          "body": {
+            "family": "{typography.font-body}",
+            "size": "18px",
+            "url": ""
+          },
+          "nav": {
+            "family": "{typography.font-body}",
+            "size": "16px",
+            "url": ""
+          }
+        },
+        "spacing": {
+          "base": "8px",
+          "scale": "[4px, 8px, 16px, 24px, 32px, 48px, 64px, 96px, 128px]"
+        },
+        "radius": {
+          "md": "12px",
+          "lg": "14px",
+          "xl": "28px",
+          "pill": "9999px"
+        }
+      },
+      "designInstructions": "## Token Instructions\n\n- `primary` (#5865f2) → Blurple is the brand voltage: blurple CTA, logomark field, link/hover accents\n- `primary-hover` (#8891f2) → lighter blurple on button hover\n- `cta-light` (#ffffff) → white pill is the primary hero CTA (with #23272a text)\n- `cta-green` (#57f287) → spring-green action/link pill with black text\n- `surface` (#23272a) → \"not-quite-black\" base; `surface-charcoal` (#2c2f33) for product mocks\n- `surface-glass` (white @10%) → translucent feature cards that let the starfield show through\n- `bg-indigo-1` → `bg-indigo-2` → ground large sections on indigo→blurple gradients + starfield\n- candy palette (`fuchsia`/`yellow`/`spring-green`/`red`/`vivid-cerulean`/`orange`) → gradient-art and mascots only; never body text\n- `font-display` (Ginto Nord) → headlines heavy, condensed, UPPERCASE, tight leading; use `font-body` (Ginto Normal) for readable copy\n- `radius.md` (12–14px) → CTA/nav pills; `radius.xl` (~28px) → large glassy feature cards\n- `card-feature` → translucent panel holding a vivid gradient-art tile + a 3D Wumpus overflowing the edge\n\n# Discord\n\n**discord-design — version alpha**\n\nSurfaces studied via Playwright (discord.com home): computed styles + a large `:root` token set (the famous named brand colors `--blurple`, `--fuchsia`, `--spring-green`, plus dozens of `--bg-gradient-*` themes). High-confidence extraction; gradient backgrounds are HSL-authored and resolved to representative hexes here.\n\n## Overview\n\nDiscord's canvas is **playful and cosmic**: deep **indigo→blurple gradient** backgrounds dusted with tiny stars, with the iconic **Blurple `{colors.primary}` (#5865f2)** as the brand voltage and a **candy support palette** (fuchsia, spring-green, yellow, cerulean) powering gradient art. The defining type move is **ABC Ginto Nord** — a **heavy, condensed grotesque set UPPERCASE and tight** (\"GROUP CHAT THAT'S ALL FUN & GAMES\") — which gives the loud, fun, gamer energy; **ABC Ginto Normal** handles the friendly, readable body. Surfaces are **big, soft, glassy rounded cards** (translucent panels holding vivid gradient-art tiles) interspersed with **3D-rendered Wumpus characters** and product UI mockups. Geometry is **very rounded** and the page is alive with motion: a **scrolling TALK·PLAY·CHAT marquee**, animated gradient washes, and floating mascots. CTAs are **white pills** (and a blurple alternate).\n\n## Colors\n\n- **Blurple — `{colors.primary}` #5865f2.** The signature brand hue: the blurple CTA, the brand logomark field, link/hover accents (hover lightens to `{colors.primary-hover}` #8891f2). Deep variant `{colors.dark-blurple}` #3442d9.\n- **Action surfaces.** The hero's primary CTA is a **white pill** (`{colors.cta-light}` with #23272a text); a **blurple** pill is the alternate (\"Open Discord in your browser\"). **Spring-green `{colors.cta-green}` #57f287** appears as a green action/link with black text.\n- **Cosmic surfaces.** Base \"not-quite-black\" `{colors.surface}` #23272a and charcoal `{colors.surface-charcoal}` #2c2f33 for product mocks; large sections use **indigo→blurple gradients** (`{colors.bg-indigo-1}`→`{colors.bg-indigo-2}`) over near-black. Feature cards are **translucent glass** (`{colors.surface-glass}`, white @10%).\n- **Text.** White `{colors.on-surface}`; secondary white@70%; muted **Greyple** #99aab5; light fills use `{colors.off-white}` #f6f6f6.\n- **Candy support palette.** fuchsia #eb459e, yellow #fee75c, spring-green #57f287, red #ed4245, cerulean #00b0f4, orange #fda220 — these drive the **gradient-art tiles** (pink/magenta and green washes) and the playful mascots; they are decorative, not text colors. (Discord also ships dozens of named profile/background gradient themes — Aurora, Chroma Glow, Citrus Sherbert, etc.)\n\n## Typography\n\n- **ABC Ginto Nord** (`Abcgintodiscordnord`) — display. A **heavy, condensed** grotesque, set **uppercase**, weight 700, tight line-height (≤0.9) and slight negative tracking. Closest open-source substitute: **Anton** or **Archivo Expanded/Black** for the condensed-heavy feel.\n- **ABC Ginto Normal** (`Abcgintodiscord`) — body & nav, friendly and rounded. OSS sub: **Hanken Grotesk** / Inter.\n\n| Token | Family | Size | Weight | Line-height | Case | Usage |\n|---|---|---|---|---|---|---|\n| h1 | Ginto Nord | 56px+ | 700 | 0.86 | UPPER | Hero (\"GROUP CHAT THAT'S ALL FUN & GAMES\") |\n| h2 | Ginto Nord | 40px | 700 | 0.9 | UPPER | Feature headings (\"MAKE YOUR GROUP CHATS MORE FUN\") |\n| marquee | Ginto Nord | large | 700 | — | UPPER | Scrolling TALK·PLAY·CHAT band |\n| body-lg | Ginto Normal | 20px | 400 | 1.4 | — | Hero sub-copy |\n| body | Ginto Normal | 18px | 400 | 1.3 | — | Feature body |\n| nav | Ginto Normal | 16px | 500 | — | — | Nav links |\n\n## Layout\n\nBase unit 8px. The page is a vertical sequence of **alternating offset feature rows** inside huge rounded sections: a translucent glass card holding a **gradient-art tile + product mock** on one side, a Ginto-Nord uppercase heading + body on the other, with a **floating 3D Wumpus** breaking the card edge. Punctuating bands include the **scrolling word marquee** (TALK · PLAY · CHAT · HANG) and a platform-icon rail (Xbox/PS/Windows/iOS/Android). The footer is a multi-column link directory over the indigo gradient. Layout is loose, generous and bouncy.\n\n## Elevation & Depth\n\nDepth is **atmospheric, not shadow-driven**: glowing gradient washes, translucent **glass cards** that let the starfield show through, soft blurred orbs/planets, and **3D-rendered characters** with real lighting. Cards have soft large-radius edges and gentle ambient shadow. The overall feel is layered and spatial rather than flat.\n\n## Shapes\n\n**Very rounded.** CTA pills/nav buttons at `{rounded.md}` 12–14px, large glassy feature cards around `{rounded.xl}` ~28px, product mocks ~14px, and fully-round pills for nav \"Log In\" and avatars. Big soft corners reinforce the friendly, toy-like, playful brand.\n\n## Components\n\n- **Light CTA `{components.button-cta-light}`** — white pill, #23272a label (\"Download for Mac\"); the primary action.\n- **Blurple CTA `{components.button-cta-blurple}`** — blurple fill, white label (\"Open Discord in your browser\"), hover → #8891f2.\n- **Green action `{components.button-cta-green}`** — spring-green pill with black text.\n- **Glass feature card `{components.card-feature}`** — translucent white@10% panel, ~28px radius, containing a vivid **gradient-art tile** + a 3D Wumpus character overflowing the edge.\n- **Product mock `{components.card-product-mock}`** — dark #23272a UI panels (channel list, DM presence list with green \"Listening to Spotify\"), ~14px radius, used to demo the app.\n- **Marquee** — the looping uppercase Ginto-Nord word band.\n\n## Motion\n\nMotion is core to the brand: the **scrolling TALK·PLAY·CHAT marquee**, slowly **animated multi-stop gradient** backgrounds, **floating/rotating 3D characters**, parallax starfields, and playful scroll-reveal of offset cards. The energy is bouncy and lively (befitting a gaming/community product), not subtle.\n\n## Iconography\n\nA mix of **solid UI glyphs** (white, in nav and mocks) and **3D / brand-colored platform badges** (Xbox green, PlayStation blue, Windows, iOS, Android in colored circles). The brand mark is the **white Clyde/Wumpus face on blurple**. Mascots (Wumpus and friends) appear as full 3D illustrations throughout.\n\n## Do's and Don'ts\n\n- **Do** set headlines in ABC Ginto Nord — heavy, **condensed, UPPERCASE**, tight leading.\n- **Do** ground sections on **indigo→blurple gradient + starfield** backgrounds.\n- **Do** use Blurple #5865f2 as the brand voltage; white pills as the primary CTA.\n- **Do** lean on **translucent glass cards, vivid gradient-art tiles, and 3D Wumpus characters**.\n- **Do** keep corners big and soft.\n- **Do** use the candy palette for illustration/gradient art, and animate (marquee, gradients, floating mascots).\n- **Don't** set body in the condensed Nord face — use Ginto Normal for readability.\n- **Don't** flatten the design to plain dark panels; the atmosphere (glow, glass, 3D, stars) is the brand.\n- **Don't** use candy colors for body text; keep text white / white@70% / greyple.\n\n## Known Gaps\n\n- Discord ships dozens of named gradient themes (`--bg-gradient-*`, `--checkpoint-*`); only the core home-page indigo/blurple set is consolidated here.\n- Hero h1 scales responsively above the 56px base; the largest display size is a `clamp()` not captured as one value.\n- Exact glassy-card radius (~28px) is inferred from rendering.\n",
+      "id": "style_6aaff769bd8a",
+      "created": "2026-06-25T10:26:45.711Z",
+      "modified": "2026-06-25T10:26:45.711Z"
+    }
+  ]
+}

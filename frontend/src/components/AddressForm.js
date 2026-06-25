@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_BASE = process.env.REACT_APP_API_URL !== undefined ? process.env.REACT_APP_API_URL : 'http://localhost:5002';
+const API_BASE = process.env.REACT_APP_API_URL !== undefined ? process.env.REACT_APP_API_URL : '';
+
 
 const AddressForm = ({ location, fetchAddresses, suggestedAddress, isGeocoding }) => {
   const [form, setForm] = useState({ category: '', house: '', road: '', isFavorite: false });

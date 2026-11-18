@@ -4,8 +4,7 @@ import AddressForm from './components/AddressForm';
 import axios from 'axios';
 import './App.css';
 
-const API_BASE = process.env.REACT_APP_API_URL !== undefined ? process.env.REACT_APP_API_URL : '';
-
+const API_BASE = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_BASE_URL || '';
 
 const App = () => {
   // Center map on standard default (New York) first, updated by Geolocation
@@ -18,9 +17,9 @@ const App = () => {
   const fetchAddresses = async () => {
     try {
       const response = await axios.get(`${API_BASE}/addresses`);
-      setAddresses(response.data);
+      setAddresses(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
-      console.error('Failed to fetch addresses');
+      console.error('Failed to fetch addresses', err);
     }
   };
 
@@ -44,17 +43,25 @@ const App = () => {
 
   // Fetch geocoded address when location changes (debounced by 400ms)
   useEffect(() => {
-    if (location.lat === 0 && location.lng === 0) return;
+    if (!location || (location.lat === 0 && location.lng === 0)) return;
+
+    let isCancelled = false;
 
     const geocodeLocation = async () => {
       setIsGeocoding(true);
       try {
         const response = await axios.get(`${API_BASE}/api/geocode?lat=${location.lat}&lng=${location.lng}`);
-        setSuggestedAddress(response.data);
+        if (!isCancelled) {
+          setSuggestedAddress(response.data);
+        }
       } catch (err) {
-        console.error('Failed to geocode location', err);
+        if (!isCancelled) {
+          console.error('Failed to geocode location', err);
+        }
       } finally {
-        setIsGeocoding(false);
+        if (!isCancelled) {
+          setIsGeocoding(false);
+        }
       }
     };
 
@@ -62,7 +69,11 @@ const App = () => {
       geocodeLocation();
     }, 400);
 
-    return () => clearTimeout(timer);
+    return () => {
+      isCancelled = true;
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.lat, location.lng]);
 
   const handleViewOnMap = (address) => {
@@ -126,12 +137,12 @@ const App = () => {
         <div className="address-list-container">
           <h2 className="address-list-title">Saved Addresses</h2>
           <ul className="address-list">
-            {addresses.map((address) => {
+            {addresses.map((address, idx) => {
               const badgeClass = address.category === 'Home' ? 'badge-home' : address.category === 'Office' ? 'badge-office' : 'badge-friends';
               const categoryIcon = address.category === 'Home' ? '🏠' : address.category === 'Office' ? '🏢' : '👥';
               return (
                 <li 
-                  key={address._id} 
+                  key={address._id || idx} 
                   className={`address-item ${selectedAddress && selectedAddress._id === address._id ? 'selected' : ''}`}
                   onClick={() => handleViewOnMap(address)}
                   style={{ cursor: 'pointer' }}

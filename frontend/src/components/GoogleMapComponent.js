@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import axios from 'axios';
 
-const API_BASE = process.env.REACT_APP_API_URL !== undefined ? process.env.REACT_APP_API_URL : 'http://localhost:5002';
+const API_BASE = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_BASE_URL || '';
 
 const LIBRARIES = [];
 
@@ -19,7 +19,7 @@ const GoogleMapComponent = ({ location, setLocation, addresses = [], onSelectAdd
   const debounceRef = useRef(null);
   const wrapperRef  = useRef(null);
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside and cleanup debounce on unmount
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
@@ -27,7 +27,10 @@ const GoogleMapComponent = ({ location, setLocation, addresses = [], onSelectAdd
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
   }, []);
 
   const handleSearchChange = useCallback((e) => {
@@ -57,7 +60,7 @@ const GoogleMapComponent = ({ location, setLocation, addresses = [], onSelectAdd
 
   const handleSelectResult = (result) => {
     setLocation({ lat: result.latitude, lng: result.longitude });
-    setSearchQuery(result.label.split(',').slice(0, 2).join(', '));
+    setSearchQuery((result.label || '').split(',').slice(0, 2).join(', '));
     setSearchResults([]);
     setShowDropdown(false);
   };
@@ -117,10 +120,10 @@ const GoogleMapComponent = ({ location, setLocation, addresses = [], onSelectAdd
                 <span className="result-pin">📍</span>
                 <div className="result-text">
                   <span className="result-primary">
-                    {result.label.split(',')[0]}
+                    {(result.label || '').split(',')[0]}
                   </span>
                   <span className="result-secondary">
-                    {result.label.split(',').slice(1, 3).join(',').trim()}
+                    {(result.label || '').split(',').slice(1, 3).join(',').trim()}
                   </span>
                 </div>
               </li>
@@ -147,7 +150,7 @@ const GoogleMapComponent = ({ location, setLocation, addresses = [], onSelectAdd
           position={location}
           draggable={true}
           onDragEnd={(e) => setLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })}
-          icon={{ url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' }}
+          icon={{ url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png' }}
           title="Drag to pinpoint your location"
         />
 
@@ -156,11 +159,11 @@ const GoogleMapComponent = ({ location, setLocation, addresses = [], onSelectAdd
           if (!addr.latitude || !addr.longitude) return null;
           const isSelected = selectedAddress && selectedAddress._id === addr._id;
 
-          let iconUrl = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
-          if (isSelected)                         iconUrl = 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
-          else if (addr.category === 'Home')      iconUrl = 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png';
-          else if (addr.category === 'Office')    iconUrl = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
-          else if (addr.category === 'Friends & Family') iconUrl = 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png';
+          let iconUrl = 'https://maps.google.com/mapfiles/ms/icons/red-dot.png';
+          if (isSelected)                         iconUrl = 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
+          else if (addr.category === 'Home')      iconUrl = 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png';
+          else if (addr.category === 'Office')    iconUrl = 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png';
+          else if (addr.category === 'Friends & Family') iconUrl = 'https://maps.google.com/mapfiles/ms/icons/purple-dot.png';
 
           return (
             <Marker

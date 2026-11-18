@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_BASE = process.env.REACT_APP_API_URL !== undefined ? process.env.REACT_APP_API_URL : '';
-
+const API_BASE = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_BASE_URL || '';
 
 const AddressForm = ({ location, fetchAddresses, suggestedAddress, isGeocoding }) => {
   const [form, setForm] = useState({ category: '', house: '', road: '', isFavorite: false });
@@ -21,17 +20,28 @@ const AddressForm = ({ location, fetchAddresses, suggestedAddress, isGeocoding }
 
   const saveAddress = async () => {
     try {
-      if (!form.category || !form.house || !form.road) {
+      if (!form.category || !form.house.trim() || !form.road.trim()) {
         setError('All fields are required');
         return;
       }
-      await axios.post(`${API_BASE}/addresses`, { ...form, latitude: location.lat, longitude: location.lng });
+      if (!location || location.lat === undefined || location.lng === undefined) {
+        setError('Please select a valid location on the map');
+        return;
+      }
+      await axios.post(`${API_BASE}/addresses`, {
+        category: form.category,
+        house: form.house.trim(),
+        road: form.road.trim(),
+        isFavorite: form.isFavorite,
+        latitude: location.lat,
+        longitude: location.lng
+      });
       setError(null);
       // Reset form after saving
       setForm({ category: '', house: '', road: '', isFavorite: false });
       fetchAddresses(); // This will refresh the address list
     } catch (err) {
-      setError('Failed to save address');
+      setError(err.response?.data?.error || 'Failed to save address');
     }
   };
 

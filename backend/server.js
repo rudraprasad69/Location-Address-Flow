@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 // Strip Netlify Functions prefix if present
 app.use((req, res, next) => {
   if (req.url.startsWith('/.netlify/functions/api')) {
-    req.url = req.url.replace('/.netlify/functions/api', '');
+    req.url = req.url.replace('/.netlify/functions/api', '') || '/';
   }
   next();
 });
@@ -70,17 +70,24 @@ const httpsGet = (url, headers = {}) =>
         ...headers,
       },
     };
-    https.get(reqOptions, (res) => {
+    const req = https.get(reqOptions, (res) => {
       let body = '';
       res.on('data', (chunk) => (body += chunk));
       res.on('end', () => {
+        if (res.statusCode && (res.statusCode < 200 || res.statusCode >= 300)) {
+          return reject(new Error(`HTTP request failed with status ${res.statusCode}`));
+        }
         try {
           resolve(JSON.parse(body));
         } catch (e) {
           reject(new Error('Failed to parse JSON response'));
         }
       });
-    }).on('error', reject);
+    });
+    req.setTimeout(8000, () => {
+      req.destroy(new Error('Request timed out'));
+    });
+    req.on('error', reject);
   });
 
 // ─── Nominatim Reverse Geocode ─────────────────────────────────────────────────
@@ -104,18 +111,21 @@ const nominatimReverse = async (lat, lng) => {
     addr.suburb ||
     addr.city_district ||
     addr.county ||
-    data.display_name.split(',')[0];
+    (data.display_name ? data.display_name.split(',')[0] : 'Unknown Road');
 
   return {
     house,
     road,
-    formatted_address: data.display_name,
+    formatted_address: data.display_name || `${house}, ${road}`,
   };
 };
 
 // ─── POST /addresses ───────────────────────────────────────────────────────────
 app.post('/addresses', async (req, res) => {
   try {
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).send({ error: 'Database is currently unavailable. Please try again shortly.' });
+    }
     const { category, house, road, latitude, longitude } = req.body;
     if (!category || !house || !road || latitude === undefined || longitude === undefined) {
       return res.status(400).send({ error: 'All fields are required' });
@@ -131,6 +141,9 @@ app.post('/addresses', async (req, res) => {
 // ─── GET /addresses ────────────────────────────────────────────────────────────
 app.get('/addresses', async (req, res) => {
   try {
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).send({ error: 'Database is currently unavailable. Please try again shortly.' });
+    }
     const addresses = await Address.find();
     res.send(addresses);
   } catch (err) {
@@ -157,21 +170,21 @@ app.get('/api/geocode', async (req, res) => {
 
         if (data.status === 'OK' && data.results && data.results.length > 0) {
           const firstResult = data.results[0];
-          const components = firstResult.address_components;
+          const components = firstResult.address_components || [];
           let house = '', road = '', sublocality = '', neighborhood = '';
 
           for (const component of components) {
-            const types = component.types;
+            const types = component.types || [];
             if (types.includes('street_number')) house = component.long_name;
             else if (types.includes('route')) road = component.long_name;
             else if (types.includes('sublocality') || types.includes('sublocality_level_1')) sublocality = component.long_name;
             else if (types.includes('neighborhood')) neighborhood = component.long_name;
           }
 
-          if (!road) road = neighborhood || sublocality || firstResult.formatted_address.split(',')[0];
+          if (!road) road = neighborhood || sublocality || (firstResult.formatted_address ? firstResult.formatted_address.split(',')[0] : '');
           if (!house) house = 'Flat ' + (Math.floor(Math.abs(parseFloat(lat)) * 1000) % 100 + 1);
 
-          return res.send({ house, road, formatted_address: firstResult.formatted_address });
+          return res.send({ house, road: road || 'Unknown Road', formatted_address: firstResult.formatted_address || `${house}, ${road}` });
         } else {
           googleDenied = true; // billing error or no results — fall through to Nominatim
         }
@@ -197,7 +210,7 @@ app.get('/api/geocode', async (req, res) => {
   }
 });
 
-// ─── GET /api/search ─────────────────────────────────────────── (Nominatim text search)
+// ─── GET /api/search ─────────────────────────────────────────── (Nominatim with Google fallback)
 app.get('/api/search', async (req, res) => {
   try {
     const { q } = req.query;
@@ -206,21 +219,47 @@ app.get('/api/search', async (req, res) => {
     }
 
     const encoded = encodeURIComponent(q.trim());
-    const data = await httpsGet(
-      `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&addressdetails=1&limit=6`
-    );
+    try {
+      const data = await httpsGet(
+        `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&addressdetails=1&limit=6`
+      );
 
-    if (!Array.isArray(data)) return res.send([]);
+      if (Array.isArray(data)) {
+        const results = data.map((item) => ({
+          label: item.display_name || '',
+          latitude: parseFloat(item.lat),
+          longitude: parseFloat(item.lon),
+          type: item.type,
+          class: item.class,
+        }));
+        return res.send(results);
+      }
+    } catch (_) {
+      // Fall through to Google Maps geocoding fallback
+    }
 
-    const results = data.map((item) => ({
-      label: item.display_name,
-      latitude: parseFloat(item.lat),
-      longitude: parseFloat(item.lon),
-      type: item.type,
-      class: item.class,
-    }));
+    // Google Maps Geocoding API fallback
+    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+    if (apiKey && !apiKey.startsWith('your_')) {
+      try {
+        const gUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encoded}&key=${apiKey}`;
+        const gData = await httpsGet(gUrl);
+        if (gData.status === 'OK' && Array.isArray(gData.results)) {
+          const results = gData.results.slice(0, 6).map((item) => ({
+            label: item.formatted_address || '',
+            latitude: item.geometry?.location?.lat,
+            longitude: item.geometry?.location?.lng,
+            type: (item.types && item.types[0]) || 'place',
+            class: 'place',
+          }));
+          return res.send(results);
+        }
+      } catch (_) {
+        // Both search providers failed
+      }
+    }
 
-    res.send(results);
+    res.send([]);
   } catch (err) {
     res.status(500).send({ error: err.message });
   }
@@ -229,6 +268,9 @@ app.get('/api/search', async (req, res) => {
 // ─── PUT /addresses/:id ────────────────────────────────────────────────────────
 app.put('/addresses/:id', async (req, res) => {
   try {
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).send({ error: 'Database is currently unavailable. Please try again shortly.' });
+    }
     const { id } = req.params;
     const updates = req.body;
     const address = await Address.findByIdAndUpdate(id, updates, { new: true });
@@ -242,17 +284,20 @@ app.put('/addresses/:id', async (req, res) => {
 // ─── DELETE /addresses/:id ─────────────────────────────────────────────────────
 app.delete('/addresses/:id', async (req, res) => {
   try {
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).send({ error: 'Database is currently unavailable. Please try again shortly.' });
+    }
     const { id } = req.params;
     const address = await Address.findByIdAndDelete(id);
     if (!address) return res.status(404).send({ error: 'Address not found' });
     res.send(address);
   } catch (err) {
-    res.status(500).send({ error: err.message });
+    res.status(err.name === 'CastError' ? 400 : 500).send({ error: err.message });
   }
 });
 
 const PORT = process.env.PORT || 5002;
-if (!process.env.NETLIFY) {
+if (require.main === module) {
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 

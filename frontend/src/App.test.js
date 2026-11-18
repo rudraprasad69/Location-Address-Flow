@@ -16,10 +16,11 @@ jest.mock('axios', () => ({
 }));
 
 test('renders Location Address Flow header', async () => {
-  render(<App />);
+  const { unmount } = render(<App />);
   const headerElement = screen.getByText(/Location Address Flow/i);
   expect(headerElement).toBeInTheDocument();
   await waitFor(() => {
     expect(screen.getByRole('heading', { name: /Saved Addresses/i })).toBeInTheDocument();
   });
+  unmount();
 });

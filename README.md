@@ -70,7 +70,7 @@ npm install
 ### 4. Install frontend dependencies
 
 ```bash
-cd client
+cd frontend
 npm install
 ```
 
